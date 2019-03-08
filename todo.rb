@@ -74,16 +74,16 @@ end
 post '/lists/:list_id/delete' do
   @list_id = params[:list_id].to_i
   session[:lists].delete_at(@list_id)
-  session[:success] = "The list has been deleted."
-  redirect "/lists"
+  session[:success] = 'The list has been deleted.'
+  redirect '/lists'
 end
 
-# Delete todo item 
+# Delete todo item
 post '/lists/:list_id/todos/:todo_id/delete' do
   @list_id = params[:list_id].to_i
   @todo_id = params[:todo_id].to_i
   session[:lists][@list_id][:todos].delete_at(@todo_id)
-  session[:success] = "The todo has been deleted."
+  session[:success] = 'The todo has been deleted.'
   redirect "/lists/#{@list_id}"
 end
 
@@ -98,13 +98,13 @@ post '/lists/:list_id/todos' do
     session[:error] = error
     erb :list, layout: :layout
   else
-    @list[:todos] << {name: params[:todo], completed: false} 
-    session[:success] = "The todo item has been added."
+    @list[:todos] << { name: params[:todo], completed: false }
+    session[:success] = 'The todo item has been added.'
     redirect "/lists/#{@list_id}"
   end
 end
 
-# Return an error message if the name is invalid. 
+# Return an error message if the name is invalid.
 # Return nil if name is valid.
 def error_for_list_name(name)
   if !(1..100).cover?(name.size)
@@ -115,7 +115,5 @@ def error_for_list_name(name)
 end
 
 def error_for_todo_name(name)
-  if !(1..100).cover?(name.size)
-    'Todo must be between 1 and 100 characters.'
-  end
+  'Todo must be between 1 and 100 characters.' unless (1..100).cover?(name.size)
 end
