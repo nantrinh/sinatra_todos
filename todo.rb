@@ -14,7 +14,7 @@ helpers do
   end
 
   def list_class(list)
-    "complete" if list_complete?(list)
+    'complete' if list_complete?(list)
   end
 
   def todos_remaining_count(list)
@@ -111,7 +111,7 @@ post '/lists/:list_id/todos/:todo_id' do
   @todo_id = params[:todo_id].to_i
   completed = to_boolean(params[:completed])
   session[:lists][@list_id][:todos][@todo_id][:completed] = completed
-  session[:success] = "The todo has been updated."
+  session[:success] = 'The todo has been updated.'
   redirect "/lists/#{@list_id}"
 end
 
@@ -121,17 +121,17 @@ post '/lists/:list_id/complete_all' do
   session[:lists][@list_id][:todos].each do |todo|
     todo[:completed] = true
   end
-  session[:success] = "All todos have been completed."
+  session[:success] = 'All todos have been completed.'
   redirect "/lists/#{@list_id}"
 end
 
 def to_boolean(str)
-  if str == "true"
+  if str == 'true'
     true
-  elsif str == "false"
+  elsif str == 'false'
     false
   else
-    raise StandardError, "Input must be true or false"
+    raise StandardError, 'Input must be true or false'
   end
 end
 
