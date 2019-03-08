@@ -97,6 +97,16 @@ post '/lists/:list_id/todos/:todo_id' do
   redirect "/lists/#{@list_id}"
 end
 
+# Set all todo items to completed
+post '/lists/:list_id/complete_all' do
+  @list_id = params[:list_id].to_i
+  session[:lists][@list_id][:todos].each do |todo|
+    todo[:completed] = true
+  end
+  session[:success] = "All todos have been completed."
+  redirect "/lists/#{@list_id}"
+end
+
 def to_boolean(str)
   if str == "true"
     true
