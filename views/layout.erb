@@ -9,7 +9,10 @@
   </head>
   <body>
     <header>
-      <h1>Todo Tracker</h1>
+      <a href="/"><h1>Todo Tracker</h1></a>
+      <div class="actions">
+        <%= yield_content :header_links %>
+      </div>
     </header>
 
     <% if session[:success] %>

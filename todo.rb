@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/content_for'
 require 'tilt/erubis'
 
 configure do
@@ -24,6 +25,11 @@ end
 # Render the new list form
 get '/lists/new' do
   erb :new_list, layout: :layout
+end
+
+get '/lists/:id' do
+  @list = session[:lists][params[:id].to_i]
+  erb :list, layout: :layout
 end
 
 # Return an error message if the name is invalid. Return nil if name is valid.
