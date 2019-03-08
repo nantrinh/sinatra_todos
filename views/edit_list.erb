@@ -1,9 +1,11 @@
 <section id='todos'>
   <header>
-    <h2>Editing <%= @list[:name] %></h2>
+    <h2>Editing '<%= @list[:name] %>'</h2>
     <ul>
       <li>
-        <a class="delete" href="/lists/<%=params[:id]%>/delete">Delete List</a>
+        <form action="/lists/<%= params[:id] %>/delete" method="post">
+          <button type="submit" class="delete">Delete List</button>
+        </form>
       </li>
     </ul>
   </header>
