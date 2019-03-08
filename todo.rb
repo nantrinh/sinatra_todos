@@ -87,6 +87,26 @@ post '/lists/:list_id/todos/:todo_id/delete' do
   redirect "/lists/#{@list_id}"
 end
 
+# Toggle completion of todo item
+post '/lists/:list_id/todos/:todo_id' do
+  @list_id = params[:list_id].to_i
+  @todo_id = params[:todo_id].to_i
+  completed = to_boolean(params[:completed])
+  session[:lists][@list_id][:todos][@todo_id][:completed] = completed
+  session[:success] = "The todo has been updated."
+  redirect "/lists/#{@list_id}"
+end
+
+def to_boolean(str)
+  if str == "true"
+    true
+  elsif str == "false"
+    false
+  else
+    raise StandardError, "Input must be true or false"
+  end
+end
+
 # Add todo item to a list
 post '/lists/:list_id/todos' do
   @list_id = params[:list_id].to_i
