@@ -32,6 +32,11 @@ get '/lists/:id' do
   erb :list, layout: :layout
 end
 
+get '/lists/:id/edit' do
+  @list = session[:lists][params[:id].to_i]
+  erb :edit_list, layout: :layout
+end
+
 # Return an error message if the name is invalid. Return nil if name is valid.
 def error_for_list_name(name)
   if !(1..100).cover?(name.size)
@@ -52,5 +57,22 @@ post '/lists' do
     session[:lists] << { name: list_name, todos: [] }
     session[:success] = 'The list has been created.'
     redirect '/lists'
+  end
+end
+
+# Update list
+post '/lists/:id' do
+  list_name = params[:list_name].strip
+  id = params[:id].to_i
+  @list = session[:lists][id]
+
+  error = error_for_list_name(list_name)
+  if error
+    session[:error] = error
+    erb :edit_list, layout: :layout
+  else
+    @list[:name] = list_name
+    session[:success] = 'The list has been updated.'
+    redirect "/lists/#{id}"
   end
 end
