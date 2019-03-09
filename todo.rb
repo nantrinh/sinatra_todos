@@ -60,12 +60,14 @@ end
 
 get '/lists/:list_id' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   @list = session[:lists][@list_id]
   erb :list, layout: :layout
 end
 
 get '/lists/:list_id/edit' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   @list = session[:lists][@list_id]
   erb :edit_list, layout: :layout
 end
@@ -88,6 +90,7 @@ end
 post '/lists/:list_id' do
   list_name = params[:list_name].strip
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   @list = session[:lists][@list_id]
 
   error = error_for_list_name(list_name)
@@ -104,6 +107,7 @@ end
 # Delete list
 post '/lists/:list_id/delete' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   session[:lists].delete_at(@list_id)
   session[:success] = 'The list has been deleted.'
   redirect '/lists'
@@ -112,6 +116,7 @@ end
 # Delete todo item
 post '/lists/:list_id/todos/:todo_id/delete' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   @todo_id = params[:todo_id].to_i
   session[:lists][@list_id][:todos].delete_at(@todo_id)
   session[:success] = 'The todo has been deleted.'
@@ -121,6 +126,7 @@ end
 # Toggle completion of todo item
 post '/lists/:list_id/todos/:todo_id' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   @todo_id = params[:todo_id].to_i
   completed = to_boolean(params[:completed])
   session[:lists][@list_id][:todos][@todo_id][:completed] = completed
@@ -131,6 +137,7 @@ end
 # Set all todo items to completed
 post '/lists/:list_id/complete_all' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   session[:lists][@list_id][:todos].each do |todo|
     todo[:completed] = true
   end
@@ -138,19 +145,10 @@ post '/lists/:list_id/complete_all' do
   redirect "/lists/#{@list_id}"
 end
 
-def to_boolean(str)
-  if str == 'true'
-    true
-  elsif str == 'false'
-    false
-  else
-    raise StandardError, 'Input must be true or false'
-  end
-end
-
 # Add todo item to a list
 post '/lists/:list_id/todos' do
   @list_id = params[:list_id].to_i
+  verify_list_id(@list_id)
   @list = session[:lists][@list_id]
   todo_name = params[:todo].strip
 
@@ -178,3 +176,21 @@ end
 def error_for_todo_name(name)
   'Todo must be between 1 and 100 characters.' unless (1..100).cover?(name.size)
 end
+
+def verify_list_id(list_id)
+  if !(0...session[:lists].size).cover?(@list_id)
+    session[:error] = "The requested list does not exist."
+    redirect '/lists'
+  end
+end
+
+def to_boolean(str)
+  if str == 'true'
+    true
+  elsif str == 'false'
+    false
+  else
+    raise StandardError, 'Input must be true or false'
+  end
+end
+
